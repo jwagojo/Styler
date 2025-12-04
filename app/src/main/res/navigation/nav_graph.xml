@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.mobileapp.styler.WelcomeFragment"
+        android:label="WelcomeFragment"
+        tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/action_welcomeFragment_to_catalogFragment"
+            app:destination="@id/catalogFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/catalogFragment"
+        android:name="com.mobileapp.styler.CatalogFragment"
+        android:label="CatalogFragment"
+        tools:layout="@layout/fragment_catalog">
+        <action
+            android:id="@+id/action_catalogFragment_to_pickTopFragment"
+            app:destination="@id/pickTopFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pickTopFragment"
+        android:name="com.mobileapp.styler.PickTopFragment"
+        android:label="PickTopFragment"
+        tools:layout="@layout/fragment_pick_top">
+        <action
+            android:id="@+id/action_pickTopFragment_to_pickBottomFragment"
+            app:destination="@id/pickBottomFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pickBottomFragment"
+        android:name="com.mobileapp.styler.PickBottomFragment"
+        android:label="PickBottomFragment"
+        tools:layout="@layout/fragment_pick_bottom">
+        <action
+            android:id="@+id/action_pickBottomFragment_to_pickShoeFragment"
+            app:destination="@id/pickShoeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pickShoeFragment"
+        android:name="com.mobileapp.styler.PickShoeFragment"
+        android:label="PickShoeFragment"
+        tools:layout="@layout/fragment_pick_shoe">
+        <action
+            android:id="@+id/action_pickShoeFragment_to_visualizationFragment"
+            app:destination="@id/visualizationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/visualizationFragment"
+        android:name="com.mobileapp.styler.VisualizationFragment"
+        android:label="VisualizationFragment"
+        tools:layout="@layout/fragment_visualization">
+        <action
+            android:id="@+id/action_visualizationFragment_to_catalogFragment"
+            app:destination="@id/catalogFragment" />
+    </fragment>
+
+</navigation>
