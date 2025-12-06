@@ -9,8 +9,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.mobileapp.styler.db.Item;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +31,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item currentItem = items.get(position);
         holder.name.setText(currentItem.name);
-        // Here you would load the image using a library like Glide or Picasso
-        // For now, we'll just set a placeholder
-        holder.image.setImageResource(R.mipmap.ic_launcher);
+
+        if (currentItem.imagePath != null && !currentItem.imagePath.isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(new File(currentItem.imagePath))
+                    .into(holder.image);
+        } else {
+            holder.image.setImageResource(R.mipmap.ic_launcher);
+        }
     }
 
     @Override
