@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_catalogFragment_to_pickTopFragment"
             app:destination="@id/pickTopFragment" />
+        <action
+            android:id="@+id/action_catalogFragment_to_addItemFragment"
+            app:destination="@id/addItemFragment" />
     </fragment>
 
     <fragment
@@ -64,5 +67,11 @@
             android:id="@+id/action_visualizationFragment_to_catalogFragment"
             app:destination="@id/catalogFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/addItemFragment"
+        android:name="com.mobileapp.styler.AddItemFragment"
+        android:label="AddItemFragment"
+        tools:layout="@layout/fragment_add_item" />
 
 </navigation>
