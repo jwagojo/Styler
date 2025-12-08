@@ -3,10 +3,8 @@ package com.mobileapp.styler;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -43,13 +42,13 @@ import retrofit2.Response;
 
 public class AddItemFragment extends Fragment {
 
-    // IMPORTANT: Replace with your actual remove.bg API key
     private static final String REMOVE_BG_API_KEY = "oPnQrKwNRpK15gABFytvAcFa";
     private static final String TAG = "AddItemFragment";
 
     private FragmentAddItemBinding binding;
     private Uri selectedImageUri;
     private RemoveBgApiService apiService;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -85,19 +84,19 @@ public class AddItemFragment extends Fragment {
 
     private void removeBackgroundAndSave() {
         if (selectedImageUri == null) {
-            Toast.makeText(getContext(), "Please select an image first.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (REMOVE_BG_API_KEY.equals("YOUR_API_KEY")) {
-            Toast.makeText(getContext(), "Please add your remove.bg API key.", Toast.LENGTH_LONG).show();
+            handleFailure("Please select an image first.");
             return;
         }
 
         binding.progressBar.setVisibility(View.VISIBLE);
 
-        File imageFile = new File(getRealPathFromURI(getContext(), selectedImageUri));
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
+        File imageFile = createFileFromUri(getContext(), selectedImageUri);
+        if (imageFile == null) {
+            handleFailure("Failed to create temp file for upload.");
+            return;
+        }
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse(getContext().getContentResolver().getType(selectedImageUri)), imageFile);
         MultipartBody.Part body = MultipartBody.Part.createFormData("image_file", imageFile.getName(), requestFile);
 
         apiService.removeBackground(REMOVE_BG_API_KEY, body).enqueue(new Callback<ResponseBody>() {
@@ -111,7 +110,7 @@ public class AddItemFragment extends Fragment {
                         handleFailure("Failed to save processed image.");
                     }
                 } else {
-                    handleFailure("API error: " + response.message());
+                    handleFailure("API error: " + response.code() + " " + response.message());
                 }
             }
 
@@ -123,37 +122,27 @@ public class AddItemFragment extends Fragment {
     }
 
     private String saveImageToInternalStorage(ResponseBody body) {
+        File outputFile;
         try {
-            File outputDir = requireContext().getCacheDir();
-            File outputFile = File.createTempFile(UUID.randomUUID().toString(), ".png", outputDir);
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-            try {
-                inputStream = body.byteStream();
-                outputStream = new FileOutputStream(outputFile);
+            outputFile = File.createTempFile("processed_", ".png", requireContext().getCacheDir());
+            try (InputStream inputStream = body.byteStream();
+                 OutputStream outputStream = new FileOutputStream(outputFile)) {
                 byte[] fileReader = new byte[4096];
-                long fileSizeDownloaded = 0;
                 while (true) {
                     int read = inputStream.read(fileReader);
                     if (read == -1) {
                         break;
                     }
                     outputStream.write(fileReader, 0, read);
-                    fileSizeDownloaded += read;
                 }
                 outputStream.flush();
                 return outputFile.getAbsolutePath();
             } catch (IOException e) {
+                handleFailure("Failed to save processed image stream.");
                 return null;
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
             }
         } catch (IOException e) {
+            handleFailure("Failed to create temp file for saving.");
             return null;
         }
     }
@@ -167,35 +156,54 @@ public class AddItemFragment extends Fragment {
         item.type = itemType;
         item.imagePath = imagePath;
 
-        AppDatabase.getDatabase(requireContext()).itemDao().insert(item);
-
-        requireActivity().runOnUiThread(() -> {
-            binding.progressBar.setVisibility(View.GONE);
-            Toast.makeText(getContext(), "Item saved!", Toast.LENGTH_SHORT).show();
-            NavHostFragment.findNavController(AddItemFragment.this).popBackStack();
+        executorService.execute(() -> {
+            AppDatabase.getDatabase(requireContext()).itemDao().insert(item);
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    binding.progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Item saved!", Toast.LENGTH_SHORT).show();
+                    NavHostFragment.findNavController(AddItemFragment.this).popBackStack();
+                });
+            }
         });
     }
 
     private void handleFailure(String message) {
-        requireActivity().runOnUiThread(() -> {
-            binding.progressBar.setVisibility(View.GONE);
-            Log.e(TAG, message);
-            Toast.makeText(getContext(), "Error: " + message, Toast.LENGTH_LONG).show();
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                binding.progressBar.setVisibility(View.GONE);
+                Log.e(TAG, message);
+                Toast.makeText(getContext(), "Error: " + message, Toast.LENGTH_LONG).show();
+            });
+        }
     }
 
-    private String getRealPathFromURI(Context context, Uri contentUri) {
-        Cursor cursor = null;
+    private File createFileFromUri(Context context, Uri uri) {
+        File outputFile;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
+            String fileExtension = ".jpg";
+            if (uri != null && context.getContentResolver() != null) {
+                String mimeType = context.getContentResolver().getType(uri);
+                if (mimeType != null) {
+                    if (mimeType.contains("png")) fileExtension = ".png";
+                    else if (mimeType.contains("gif")) fileExtension = ".gif";
+                }
             }
+            outputFile = File.createTempFile("upload_", fileExtension, context.getCacheDir());
+
+            try (InputStream inputStream = context.getContentResolver().openInputStream(uri);
+                 OutputStream outputStream = new FileOutputStream(outputFile)) {
+                if (inputStream == null) return null;
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+            }
+            return outputFile;
+        } catch (IOException e) {
+            Log.e(TAG, "Error creating file from URI", e);
+            return null;
         }
     }
 }
