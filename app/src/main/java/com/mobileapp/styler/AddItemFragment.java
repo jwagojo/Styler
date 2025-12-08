@@ -83,6 +83,31 @@ public class AddItemFragment extends Fragment {
     }
 
     private void removeBackgroundAndSave() {
+        String itemName = binding.editTextItemName.getText().toString().trim();
+        String itemType = binding.editTextItemType.getText().toString().trim().toLowerCase();
+
+        // Reset previous errors
+        binding.editTextItemName.setError(null);
+        binding.editTextItemType.setError(null);
+
+        // --- Validation Logic ---
+        if (itemName.isEmpty()) {
+            binding.editTextItemName.setError("Item name is required");
+            return;
+        }
+
+        if (itemType.isEmpty()) {
+            binding.editTextItemType.setError("Item type is required");
+            return;
+        }
+
+        boolean isValidType = itemType.equals("top") || itemType.equals("bottom") || itemType.equals("shoe");
+        if (!isValidType) {
+            binding.editTextItemType.setError("Type must be 'top', 'bottom', or 'shoe'");
+            return;
+        }
+        // --- End Validation ---
+
         if (selectedImageUri == null) {
             handleFailure("Please select an image first.");
             return;
@@ -149,7 +174,7 @@ public class AddItemFragment extends Fragment {
 
     private void saveItemToDatabase(String imagePath) {
         String itemName = binding.editTextItemName.getText().toString().trim();
-        String itemType = binding.editTextItemType.getText().toString().trim();
+        String itemType = binding.editTextItemType.getText().toString().trim().toLowerCase(); // Always save as lowercase
 
         Item item = new Item();
         item.name = itemName;
