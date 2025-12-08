@@ -4,17 +4,26 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
-
+import androidx.recyclerview.widget.GridLayoutManager;
 import com.mobileapp.styler.databinding.FragmentPickTopBinding;
+import com.mobileapp.styler.db.Item;
 
 public class PickTopFragment extends Fragment {
 
     private FragmentPickTopBinding binding;
+    private StylerViewModel viewModel;
+    private ItemAdapter adapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(StylerViewModel.class);
+    }
 
     @Nullable
     @Override
@@ -27,7 +36,11 @@ public class PickTopFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.pickTopGrid.setAdapter(new PlaceholderAdapter());
+        setupRecyclerView();
+
+        viewModel.tops.observe(getViewLifecycleOwner(), tops -> {
+            adapter.setItems(tops);
+        });
 
         binding.nextButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(PickTopFragment.this)
@@ -37,5 +50,15 @@ public class PickTopFragment extends Fragment {
         binding.backButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(PickTopFragment.this).popBackStack();
         });
+    }
+
+    private void setupRecyclerView() {
+        binding.pickTopGrid.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        adapter = new ItemAdapter();
+        adapter.setOnItemClickListener(item -> {
+            viewModel.setSelectedTop(item);
+            // Optionally, you can add a visual indicator for the selected item here
+        });
+        binding.pickTopGrid.setAdapter(adapter);
     }
 }
