@@ -19,6 +19,8 @@ import java.util.List;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
     private List<Item> items = new ArrayList<>();
+    private OnItemClickListener clickListener;
+    private OnItemLongClickListener longClickListener;
 
     @NonNull
     @Override
@@ -30,15 +32,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item currentItem = items.get(position);
-        holder.name.setText(currentItem.name);
-
-        if (currentItem.imagePath != null && !currentItem.imagePath.isEmpty()) {
-            Glide.with(holder.itemView.getContext())
-                    .load(new File(currentItem.imagePath))
-                    .into(holder.image);
-        } else {
-            holder.image.setImageResource(R.mipmap.ic_launcher);
-        }
+        holder.bind(currentItem, clickListener, longClickListener);
     }
 
     @Override
@@ -51,6 +45,22 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         notifyDataSetChanged();
     }
 
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.clickListener = listener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.longClickListener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Item item);
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(Item item);
+    }
+
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
         private final ImageView image;
@@ -59,6 +69,29 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             super(itemView);
             name = itemView.findViewById(R.id.item_name);
             image = itemView.findViewById(R.id.item_image);
+        }
+
+        public void bind(final Item item, final OnItemClickListener clickListener, final OnItemLongClickListener longClickListener) {
+            name.setText(item.name);
+            if (item.imagePath != null && !item.imagePath.isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(new File(item.imagePath))
+                        .into(image);
+            } else {
+                image.setImageResource(R.mipmap.ic_launcher);
+            }
+            itemView.setOnClickListener(v -> {
+                if (clickListener != null) {
+                    clickListener.onItemClick(item);
+                }
+            });
+            itemView.setOnLongClickListener(v -> {
+                if (longClickListener != null) {
+                    longClickListener.onItemLongClick(item);
+                    return true; // Consume the long click
+                }
+                return false;
+            });
         }
     }
 }
