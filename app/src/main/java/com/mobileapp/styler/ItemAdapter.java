@@ -21,6 +21,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private List<Item> items = new ArrayList<>();
     private OnItemClickListener clickListener;
     private OnItemLongClickListener longClickListener;
+    private int selectedPosition = RecyclerView.NO_POSITION;
 
     @NonNull
     @Override
@@ -32,7 +33,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item currentItem = items.get(position);
-        holder.bind(currentItem, clickListener, longClickListener);
+        holder.bind(currentItem, clickListener, longClickListener, position, selectedPosition);
     }
 
     @Override
@@ -61,17 +62,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         void onItemLongClick(Item item);
     }
 
-    static class ItemViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
         private final ImageView image;
+        private final View selectionOverlay;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.item_name);
             image = itemView.findViewById(R.id.item_image);
+            selectionOverlay = itemView.findViewById(R.id.item_selection_overlay);
         }
 
-        public void bind(final Item item, final OnItemClickListener clickListener, final OnItemLongClickListener longClickListener) {
+        public void bind(final Item item, final OnItemClickListener clickListener, final OnItemLongClickListener longClickListener, final int position, final int selectedPosition) {
             name.setText(item.name);
             if (item.imagePath != null && !item.imagePath.isEmpty()) {
                 Glide.with(itemView.getContext())
@@ -80,11 +83,23 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             } else {
                 image.setImageResource(R.mipmap.ic_launcher);
             }
+
+            if (position == selectedPosition) {
+                selectionOverlay.setVisibility(View.VISIBLE);
+            } else {
+                selectionOverlay.setVisibility(View.GONE);
+            }
+
             itemView.setOnClickListener(v -> {
                 if (clickListener != null) {
                     clickListener.onItemClick(item);
+                    int previousPosition = ItemAdapter.this.selectedPosition;
+                    ItemAdapter.this.selectedPosition = getAdapterPosition();
+                    notifyItemChanged(previousPosition);
+                    notifyItemChanged(ItemAdapter.this.selectedPosition);
                 }
             });
+
             itemView.setOnLongClickListener(v -> {
                 if (longClickListener != null) {
                     longClickListener.onItemLongClick(item);
