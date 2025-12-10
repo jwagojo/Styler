@@ -74,6 +74,9 @@ public class AddItemFragment extends Fragment {
 
         binding.buttonSelectImage.setOnClickListener(v -> openGallery());
         binding.buttonSave.setOnClickListener(v -> removeBackgroundAndSave());
+        binding.fabBack.setOnClickListener(v -> {
+            NavHostFragment.findNavController(AddItemFragment.this).popBackStack();
+        });
     }
 
     private void openGallery() {

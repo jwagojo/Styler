@@ -47,7 +47,7 @@ public class PickShoeFragment extends Fragment {
                     .navigate(R.id.action_pickShoeFragment_to_visualizationFragment);
         });
 
-        binding.backButton.setOnClickListener(v -> {
+        binding.fabBack.setOnClickListener(v -> {
             NavHostFragment.findNavController(PickShoeFragment.this).popBackStack();
         });
     }

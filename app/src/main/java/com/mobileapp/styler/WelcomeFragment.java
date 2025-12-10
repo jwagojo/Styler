@@ -35,7 +35,7 @@ public class WelcomeFragment extends Fragment {
 
         binding.startButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(WelcomeFragment.this)
-                    .navigate(R.id.action_welcomeFragment_to_catalogFragment);
+                    .navigate(R.id.action_welcomeFragment_to_homeFragment);
         });
     }
 }

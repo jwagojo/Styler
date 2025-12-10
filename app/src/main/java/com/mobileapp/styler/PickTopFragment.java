@@ -47,7 +47,7 @@ public class PickTopFragment extends Fragment {
                     .navigate(R.id.action_pickTopFragment_to_pickBottomFragment);
         });
 
-        binding.backButton.setOnClickListener(v -> {
+        binding.fabBack.setOnClickListener(v -> {
             NavHostFragment.findNavController(PickTopFragment.this).popBackStack();
         });
     }
