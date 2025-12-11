@@ -37,6 +37,10 @@ public class StylerViewModel extends AndroidViewModel {
         executorService.execute(() -> itemDao.delete(item));
     }
 
+    public void clearAllData() {
+        executorService.execute(() -> itemDao.deleteAll());
+    }
+
     public void setSelectedTop(Item top) {
         selectedTop.setValue(top);
     }
