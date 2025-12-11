@@ -79,7 +79,7 @@ public class VisualizationFragment extends Fragment {
                     Glide.with(this).load(new File(outfit.bottomImageUri)).into(binding.bottomImage);
                     Glide.with(this).load(new File(outfit.shoeImageUri)).into(binding.shoeImage);
                 });
-            }
+            } //test
         });
     }
 
