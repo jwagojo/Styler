@@ -2,5 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="yellow">#FFFFFF00</color>
+    <color name="yellowAccent">#FFD700</color>
+    <color name="textWhite">#FFFFFF</color>
+    <color name="textGrey">#C0C0C0</color>
+    <color name="darkCharcoal">#2C2C2C</color>
+    <color name="pureBlack">#000000</color>
 </resources>

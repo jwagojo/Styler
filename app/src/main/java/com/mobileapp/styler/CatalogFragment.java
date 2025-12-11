@@ -48,14 +48,14 @@ public class CatalogFragment extends Fragment {
             adapter.setItems(items);
         });
 
-        binding.fabNext.setOnClickListener(v -> {
-            NavHostFragment.findNavController(CatalogFragment.this)
-                    .navigate(R.id.action_catalogFragment_to_pickTopFragment);
-        });
-
         binding.fabAddItem.setOnClickListener(v -> {
             NavHostFragment.findNavController(CatalogFragment.this)
                     .navigate(R.id.action_catalogFragment_to_addItemFragment);
+        });
+
+        binding.fabNext.setOnClickListener(v -> {
+            NavHostFragment.findNavController(CatalogFragment.this)
+                    .navigate(R.id.action_catalogFragment_to_pickTopFragment);
         });
     }
 

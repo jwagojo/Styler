@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -43,8 +44,12 @@ public class PickTopFragment extends Fragment {
         });
 
         binding.fabNext.setOnClickListener(v -> {
-            NavHostFragment.findNavController(PickTopFragment.this)
-                    .navigate(R.id.action_pickTopFragment_to_pickBottomFragment);
+            if (viewModel.getSelectedTop().getValue() != null) {
+                NavHostFragment.findNavController(PickTopFragment.this)
+                        .navigate(R.id.action_pickTopFragment_to_pickBottomFragment);
+            } else {
+                Toast.makeText(getContext(), "Please select an item", Toast.LENGTH_SHORT).show();
+            }
         });
 
         binding.fabBack.setOnClickListener(v -> {
@@ -57,7 +62,6 @@ public class PickTopFragment extends Fragment {
         adapter = new ItemAdapter();
         adapter.setOnItemClickListener(item -> {
             viewModel.setSelectedTop(item);
-            // Optionally, you can add a visual indicator for the selected item here
         });
         binding.pickTopGrid.setAdapter(adapter);
     }

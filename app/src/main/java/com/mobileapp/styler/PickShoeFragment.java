@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -43,8 +44,12 @@ public class PickShoeFragment extends Fragment {
         });
 
         binding.fabNext.setOnClickListener(v -> {
-            NavHostFragment.findNavController(PickShoeFragment.this)
-                    .navigate(R.id.action_pickShoeFragment_to_visualizationFragment);
+            if (viewModel.getSelectedShoe().getValue() != null) {
+                NavHostFragment.findNavController(PickShoeFragment.this)
+                        .navigate(R.id.action_pickShoeFragment_to_visualizationFragment);
+            } else {
+                Toast.makeText(getContext(), "Please select an item", Toast.LENGTH_SHORT).show();
+            }
         });
 
         binding.fabBack.setOnClickListener(v -> {

@@ -7,9 +7,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.card.MaterialCardView;
 import com.mobileapp.styler.db.Item;
 
 import java.io.File;
@@ -65,13 +67,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     class ItemViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
         private final ImageView image;
-        private final View selectionOverlay;
+        private final MaterialCardView cardView;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.item_name);
             image = itemView.findViewById(R.id.item_image);
-            selectionOverlay = itemView.findViewById(R.id.item_selection_overlay);
+            cardView = (MaterialCardView) itemView;
         }
 
         public void bind(final Item item, final OnItemClickListener clickListener, final OnItemLongClickListener longClickListener, final int position, final int selectedPosition) {
@@ -84,17 +86,29 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 image.setImageResource(R.mipmap.ic_launcher);
             }
 
-            if (position == selectedPosition) {
-                selectionOverlay.setVisibility(View.VISIBLE);
+            boolean isSelected = position == selectedPosition;
+            cardView.setChecked(isSelected);
+
+            if (isSelected) {
+                cardView.setCardElevation(16f);
+                cardView.setStrokeColor(ContextCompat.getColor(itemView.getContext(), R.color.yellowAccent));
+                cardView.setStrokeWidth(4);
             } else {
-                selectionOverlay.setVisibility(View.GONE);
+                cardView.setCardElevation(0f);
+                cardView.setStrokeColor(ContextCompat.getColor(itemView.getContext(), R.color.black));
+                cardView.setStrokeWidth(2);
             }
 
             itemView.setOnClickListener(v -> {
                 if (clickListener != null) {
                     clickListener.onItemClick(item);
                     int previousPosition = ItemAdapter.this.selectedPosition;
-                    ItemAdapter.this.selectedPosition = getAdapterPosition();
+                    if (previousPosition == getAdapterPosition()) {
+                        // Deselect the item
+                        ItemAdapter.this.selectedPosition = RecyclerView.NO_POSITION;
+                    } else {
+                        ItemAdapter.this.selectedPosition = getAdapterPosition();
+                    }
                     notifyItemChanged(previousPosition);
                     notifyItemChanged(ItemAdapter.this.selectedPosition);
                 }
