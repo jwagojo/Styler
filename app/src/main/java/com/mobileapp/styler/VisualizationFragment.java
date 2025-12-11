@@ -61,7 +61,6 @@ public class VisualizationFragment extends Fragment {
         });
 
         binding.storeButton.setOnClickListener(v -> {
-            //storeOutfit();
             askOutfitName();
         });
     }
