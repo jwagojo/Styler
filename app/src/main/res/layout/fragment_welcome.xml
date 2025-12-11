@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
     android:background="@drawable/homebackground"
     tools:context=".WelcomeFragment">
 
@@ -14,7 +13,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/roadrage"
         android:text="@string/welcome_text"
-        android:textColor="@color/yellow"
+        android:textColor="@color/yellowAccent"
         android:textSize="48sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

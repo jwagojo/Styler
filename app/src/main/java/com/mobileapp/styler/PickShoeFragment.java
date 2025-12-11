@@ -43,8 +43,10 @@ public class PickShoeFragment extends Fragment {
         });
 
         binding.fabNext.setOnClickListener(v -> {
-            NavHostFragment.findNavController(PickShoeFragment.this)
-                    .navigate(R.id.action_pickShoeFragment_to_visualizationFragment);
+            if (viewModel.getSelectedShoe().getValue() != null) {
+                NavHostFragment.findNavController(PickShoeFragment.this)
+                        .navigate(R.id.action_pickShoeFragment_to_visualizationFragment);
+            }
         });
 
         binding.fabBack.setOnClickListener(v -> {

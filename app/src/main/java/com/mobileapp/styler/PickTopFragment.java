@@ -43,8 +43,10 @@ public class PickTopFragment extends Fragment {
         });
 
         binding.fabNext.setOnClickListener(v -> {
-            NavHostFragment.findNavController(PickTopFragment.this)
-                    .navigate(R.id.action_pickTopFragment_to_pickBottomFragment);
+            if (viewModel.getSelectedTop().getValue() != null) {
+                NavHostFragment.findNavController(PickTopFragment.this)
+                        .navigate(R.id.action_pickTopFragment_to_pickBottomFragment);
+            }
         });
 
         binding.fabBack.setOnClickListener(v -> {
@@ -57,7 +59,6 @@ public class PickTopFragment extends Fragment {
         adapter = new ItemAdapter();
         adapter.setOnItemClickListener(item -> {
             viewModel.setSelectedTop(item);
-            // Optionally, you can add a visual indicator for the selected item here
         });
         binding.pickTopGrid.setAdapter(adapter);
     }
