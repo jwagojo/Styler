@@ -80,4 +80,10 @@
         android:label="AddItemFragment"
         tools:layout="@layout/fragment_add_item" />
 
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.mobileapp.styler.HelpFragment"
+        android:label="HelpFragment"
+        tools:layout="@layout/fragment_help" />
+
 </navigation>

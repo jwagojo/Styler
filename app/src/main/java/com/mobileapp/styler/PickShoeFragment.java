@@ -42,7 +42,7 @@ public class PickShoeFragment extends Fragment {
             adapter.setItems(shoes);
         });
 
-        binding.nextButton.setOnClickListener(v -> {
+        binding.fabNext.setOnClickListener(v -> {
             NavHostFragment.findNavController(PickShoeFragment.this)
                     .navigate(R.id.action_pickShoeFragment_to_visualizationFragment);
         });

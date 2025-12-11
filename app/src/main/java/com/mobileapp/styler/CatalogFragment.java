@@ -48,7 +48,7 @@ public class CatalogFragment extends Fragment {
             adapter.setItems(items);
         });
 
-        binding.nextButton.setOnClickListener(v -> {
+        binding.fabNext.setOnClickListener(v -> {
             NavHostFragment.findNavController(CatalogFragment.this)
                     .navigate(R.id.action_catalogFragment_to_pickTopFragment);
         });
