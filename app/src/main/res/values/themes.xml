@@ -1,9 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Styler" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/yellowAccent</item>
+        <item name="colorPrimaryVariant">@color/yellowAccent</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/yellowAccent</item>
+        <item name="colorSecondaryVariant">@color/yellowAccent</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <!-- Default text color -->
+        <item name="android:textColor">@color/textWhite</item>
+        <!-- Set the window background -->
+        <item name="android:windowBackground">@drawable/page_background</item>
     </style>
-
-    <style name="Theme.Styler" parent="Base.Theme.Styler" />
 </resources>

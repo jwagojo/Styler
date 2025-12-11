@@ -43,8 +43,10 @@ public class PickBottomFragment extends Fragment {
         });
 
         binding.fabNext.setOnClickListener(v -> {
-            NavHostFragment.findNavController(PickBottomFragment.this)
-                    .navigate(R.id.action_pickBottomFragment_to_pickShoeFragment);
+            if (viewModel.getSelectedBottom().getValue() != null) {
+                NavHostFragment.findNavController(PickBottomFragment.this)
+                        .navigate(R.id.action_pickBottomFragment_to_pickShoeFragment);
+            }
         });
 
         binding.fabBack.setOnClickListener(v -> {

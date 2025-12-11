@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -72,6 +73,10 @@ public class AddItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        String[] itemTypes = new String[]{"Top", "Bottom", "Shoe"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_item, itemTypes);
+        binding.autoCompleteTextViewItemType.setAdapter(adapter);
+
         binding.buttonSelectImage.setOnClickListener(v -> openGallery());
         binding.buttonSave.setOnClickListener(v -> removeBackgroundAndSave());
         binding.fabBack.setOnClickListener(v -> {
@@ -87,26 +92,20 @@ public class AddItemFragment extends Fragment {
 
     private void removeBackgroundAndSave() {
         String itemName = binding.editTextItemName.getText().toString().trim();
-        String itemType = binding.editTextItemType.getText().toString().trim().toLowerCase();
+        String itemType = binding.autoCompleteTextViewItemType.getText().toString().trim().toLowerCase();
 
         // Reset previous errors
-        binding.editTextItemName.setError(null);
-        binding.editTextItemType.setError(null);
+        binding.textInputLayoutItemName.setError(null);
+        binding.textInputLayoutItemType.setError(null);
 
         // --- Validation Logic ---
         if (itemName.isEmpty()) {
-            binding.editTextItemName.setError("Item name is required");
+            binding.textInputLayoutItemName.setError("Item name is required");
             return;
         }
 
         if (itemType.isEmpty()) {
-            binding.editTextItemType.setError("Item type is required");
-            return;
-        }
-
-        boolean isValidType = itemType.equals("top") || itemType.equals("bottom") || itemType.equals("shoe");
-        if (!isValidType) {
-            binding.editTextItemType.setError("Type must be 'top', 'bottom', or 'shoe'");
+            binding.textInputLayoutItemType.setError("Item type is required");
             return;
         }
         // --- End Validation ---
@@ -177,7 +176,7 @@ public class AddItemFragment extends Fragment {
 
     private void saveItemToDatabase(String imagePath) {
         String itemName = binding.editTextItemName.getText().toString().trim();
-        String itemType = binding.editTextItemType.getText().toString().trim().toLowerCase(); // Always save as lowercase
+        String itemType = binding.autoCompleteTextViewItemType.getText().toString().trim().toLowerCase(); // Always save as lowercase
 
         Item item = new Item();
         item.name = itemName;
