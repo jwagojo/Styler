@@ -10,12 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobileapp.styler.databinding.FragmentHomeBinding;
 import com.mobileapp.styler.db.AppDatabase;
 import com.mobileapp.styler.db.Item;
 import com.mobileapp.styler.db.ItemDao;
+import com.mobileapp.styler.db.Outfit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +28,16 @@ public class HomeFragment extends Fragment {
     private ItemAdapter itemAdapter;
     private List<Item> allItems = new ArrayList<>();
     private OutfitAdapter outfitAdapter;
+    private AppDatabase db;
+    private ItemDao itemDao;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+
+        db = AppDatabase.getDatabase(requireContext());
+        itemDao = db.itemDao();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 3);
         binding.clothingGallery.setLayoutManager(gridLayoutManager);
@@ -45,13 +53,36 @@ public class HomeFragment extends Fragment {
         itemAdapter.setOnItemLongClickListener(item -> {
         });
 
+        // for outfits
         outfitAdapter = new OutfitAdapter();
+        outfitAdapter.setAddCard(true);
         binding.outfitsRecycler.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(
                 requireContext(), androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false)
                 );
         binding.outfitsRecycler.setAdapter(outfitAdapter);
-        outfitAdapter.setOnOutfitClickListener(outfit -> {
-            // later
+
+        db.outfitDao().getAllOutfits().observe(getViewLifecycleOwner(), outfits -> {
+            outfitAdapter.setOutfits(outfits);
+        });
+
+        outfitAdapter.setOnOutfitClickListener(new OutfitAdapter.OnOutfitClickListener() {
+            @Override
+            public void onOutfitClick(Outfit outfit) {
+                Bundle args = new Bundle();
+                args.putInt("outfitId", outfit.id);  // "outfitId" must match the argument name in nav_graph
+
+                NavHostFragment.findNavController(HomeFragment.this)
+                        .navigate(R.id.action_homeFragment_to_visualizationFragment, args);
+
+            }
+            @Override
+            public void onAddNewOutfit() {
+                NavHostFragment.findNavController(HomeFragment.this)
+                        .navigate(R.id.action_homeFragment_to_pickTopFragment);            }
+        });
+        binding.outfitsViewAll.setOnClickListener(v -> {
+            androidx.navigation.fragment.NavHostFragment.findNavController(HomeFragment.this)
+                    .navigate(R.id.action_homeFragment_to_allOutfitsFragment);
         });
 
         binding.edittextSearch.addTextChangedListener(new TextWatcher() {
@@ -71,9 +102,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void displayAllItems() {
-        AppDatabase db = AppDatabase.getDatabase(requireContext());
-        ItemDao itemDao = db.itemDao();
-
         itemDao.getAllItems().observe(getViewLifecycleOwner(), items -> {
             allItems.clear();
             if (items != null) {
@@ -106,13 +134,6 @@ public class HomeFragment extends Fragment {
         }
 
         itemAdapter.setItems(filtered);
-    }
-
-    private void observeAllOutfits() {
-        AppDatabase db = AppDatabase.getDatabase(requireContext());
-        db.outfitDao().getAllOutfits().observe(getViewLifecycleOwner(), outfits -> {
-            outfitAdapter.setOutfits(outfits);
-        });
     }
 
 

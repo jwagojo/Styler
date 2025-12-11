@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 public class Outfit {
     @PrimaryKey(autoGenerate = true)
     public int id;
-
+    public String name;
     public String topImageUri;
     public String bottomImageUri;
     public String shoeImageUri;

@@ -13,4 +13,7 @@ public interface OutfitDao {
     void insert(Outfit outfit);
     @Query("SELECT * FROM outfits")
     LiveData<List<Outfit>> getAllOutfits();
+
+    @Query("SELECT * FROM outfits WHERE id = :id LIMIT 1")
+    Outfit getOutfitById(int id);
 }

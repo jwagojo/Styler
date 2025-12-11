@@ -60,10 +60,16 @@ public class CatalogFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        binding.catalogGrid.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        /*binding.catalogGrid.setLayoutManager(new GridLayoutManager(getContext(), 2));
         adapter = new ItemAdapter();
         
         // Set the long click listener for deletion
+        adapter.setOnItemLongClickListener(item -> {
+            showDeleteConfirmationDialog(item);
+        }); */
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 3);
+        binding.catalogGrid.setLayoutManager(gridLayoutManager);
+        adapter = new ItemAdapter();
         adapter.setOnItemLongClickListener(item -> {
             showDeleteConfirmationDialog(item);
         });

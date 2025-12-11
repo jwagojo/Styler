@@ -41,7 +41,18 @@ public class VisualizationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        int outfitId = -1;
+        Bundle args = getArguments();
+        if (args != null) {
+            outfitId = args.getInt("outfitId", -1);
+        }
+        if (outfitId != -1) {
+            // Behavior A: viewing a saved outfit
+            loadSavedOutfit(outfitId);
+        } else {
+            // Existing behavior: new outfit flow using ViewModel
+            observeViewModel();
+        }
         observeViewModel();
 
         binding.homeButton.setOnClickListener(v -> {
@@ -50,11 +61,29 @@ public class VisualizationFragment extends Fragment {
         });
 
         binding.storeButton.setOnClickListener(v -> {
-            storeOutfit();
+            //storeOutfit();
+            askOutfitName();
         });
     }
 
-    private void storeOutfit() {
+    private void loadSavedOutfit(int id) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            Outfit outfit = AppDatabase.getDatabase(requireContext())
+                    .outfitDao()
+                    .getOutfitById(id);
+
+            if (outfit != null) {
+                requireActivity().runOnUiThread(() -> {
+                    Glide.with(this).load(new File(outfit.topImageUri)).into(binding.topImage);
+                    Glide.with(this).load(new File(outfit.bottomImageUri)).into(binding.bottomImage);
+                    Glide.with(this).load(new File(outfit.shoeImageUri)).into(binding.shoeImage);
+                });
+            }
+        });
+    }
+
+    private void storeOutfit(String outfitName) {
         String topImagePath = viewModel.getSelectedTop().getValue() != null ? viewModel.getSelectedTop().getValue().imagePath : null;
         String bottomImagePath = viewModel.getSelectedBottom().getValue() != null ? viewModel.getSelectedBottom().getValue().imagePath : null;
         String shoeImagePath = viewModel.getSelectedShoe().getValue() != null ? viewModel.getSelectedShoe().getValue().imagePath : null;
@@ -64,6 +93,7 @@ public class VisualizationFragment extends Fragment {
             outfit.topImageUri = topImagePath;
             outfit.bottomImageUri = bottomImagePath;
             outfit.shoeImageUri = shoeImagePath;
+            outfit.name = outfitName;
 
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
@@ -75,6 +105,25 @@ public class VisualizationFragment extends Fragment {
         } else {
             Toast.makeText(requireContext(), "Cannot save incomplete outfit.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void askOutfitName() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+        builder.setTitle("Name Your Outfit");
+
+        final android.widget.EditText input = new android.widget.EditText(requireContext());
+        input.setHint("e.g., Summer Fit, Black & White");
+        input.setPadding(40, 30, 40, 30);
+        builder.setView(input);
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String name = input.getText().toString().trim();
+            storeOutfit(name.isEmpty() ? "Untitled Outfit" : name);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
     }
 
 

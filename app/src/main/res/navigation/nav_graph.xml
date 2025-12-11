@@ -23,6 +23,15 @@
         <action
             android:id="@+id/action_homeFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_allOutfitsFragment"
+            app:destination="@id/allOutfitsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_pickTopFragment"
+            app:destination="@id/pickTopFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_visualizationFragment"
+            app:destination="@id/visualizationFragment" />
     </fragment>
 
     <fragment
@@ -73,9 +82,16 @@
         android:name="com.mobileapp.styler.VisualizationFragment"
         android:label="VisualizationFragment"
         tools:layout="@layout/fragment_visualization">
+        <argument
+            android:name="outfitId"
+            android:defaultValue="-1"
+            app:argType="integer" />
         <action
             android:id="@+id/action_visualizationFragment_to_catalogFragment"
             app:destination="@id/catalogFragment" />
+        <action
+            android:id="@+id/action_visualizationFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 
     <fragment
@@ -95,5 +111,13 @@
         android:name="com.mobileapp.styler.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/allOutfitsFragment"
+        android:name="com.mobileapp.styler.AllOutfitsFragment"
+        android:label="AllOutfitsFragment" >
+        <action
+            android:id="@+id/action_allOutfitsFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
 </navigation>
