@@ -6,4 +6,10 @@
     <string name="next_button_text">Next</string>
     <string name="back_button_text">Back</string>
     <string name="back_button_desc">Back</string>
+
+    <!-- Wardrobe Fragment Strings -->
+    <string name="wardrobe_text">Wardrobe</string>
+    <string name="search_wardrobe_hint">Search Wardrobe</string>
+    <string name="saved_outfits_text">Saved Outfits</string>
+    <string name="view_all_text">View all</string>
 </resources>
