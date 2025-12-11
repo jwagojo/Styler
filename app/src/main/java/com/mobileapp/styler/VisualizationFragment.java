@@ -57,7 +57,7 @@ public class VisualizationFragment extends Fragment {
 
         binding.homeButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(VisualizationFragment.this)
-                    .navigate(R.id.action_visualizationFragment_to_catalogFragment);
+                    .navigate(R.id.action_visualizationFragment_to_homeFragment);
         });
 
         binding.storeButton.setOnClickListener(v -> {
