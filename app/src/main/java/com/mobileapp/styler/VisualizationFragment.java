@@ -44,13 +44,11 @@ public class VisualizationFragment extends Fragment {
         int outfitId = -1;
         Bundle args = getArguments();
         if (args != null) {
-            outfitId = args.getInt("outfitId", -1);
+            outfitId = args.getInt(getString(R.string.outfit_id_key), -1);
         }
         if (outfitId != -1) {
-            // Behavior A: viewing a saved outfit
             loadSavedOutfit(outfitId);
         } else {
-            // Existing behavior: new outfit flow using ViewModel
             observeViewModel();
         }
         observeViewModel();
@@ -78,7 +76,7 @@ public class VisualizationFragment extends Fragment {
                     Glide.with(this).load(new File(outfit.bottomImageUri)).into(binding.bottomImage);
                     Glide.with(this).load(new File(outfit.shoeImageUri)).into(binding.shoeImage);
                 });
-            } //test
+            }
         });
     }
 
@@ -98,29 +96,29 @@ public class VisualizationFragment extends Fragment {
             executor.execute(() -> {
                 AppDatabase.getDatabase(requireContext()).outfitDao().insert(outfit);
                 requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(requireContext(), "Outfit saved!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.outfit_saved_toast), Toast.LENGTH_SHORT).show();
                 });
             });
         } else {
-            Toast.makeText(requireContext(), "Cannot save incomplete outfit.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.cannot_save_incomplete_outfit_toast), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void askOutfitName() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
-        builder.setTitle("Name Your Outfit");
+        builder.setTitle(getString(R.string.name_your_outfit_dialog_title));
 
         final android.widget.EditText input = new android.widget.EditText(requireContext());
-        input.setHint("e.g., Summer Fit, Black & White");
+        input.setHint(getString(R.string.outfit_name_hint));
         input.setPadding(40, 30, 40, 30);
         builder.setView(input);
 
-        builder.setPositiveButton("Save", (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.save_button), (dialog, which) -> {
             String name = input.getText().toString().trim();
-            storeOutfit(name.isEmpty() ? "Untitled Outfit" : name);
+            storeOutfit(name.isEmpty() ? getString(R.string.untitled_outfit_name) : name);
         });
 
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(getString(R.string.cancel_button_text), (dialog, which) -> dialog.cancel());
 
         builder.show();
     }

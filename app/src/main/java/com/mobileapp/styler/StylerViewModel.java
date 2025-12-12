@@ -28,9 +28,9 @@ public class StylerViewModel extends AndroidViewModel {
         AppDatabase db = AppDatabase.getDatabase(application);
         itemDao = db.itemDao();
         executorService = Executors.newSingleThreadExecutor();
-        tops = itemDao.getItemsByType("top");
-        bottoms = itemDao.getItemsByType("bottom");
-        shoes = itemDao.getItemsByType("shoe");
+        tops = itemDao.getItemsByType(application.getString(R.string.item_type_top));
+        bottoms = itemDao.getItemsByType(application.getString(R.string.item_type_bottom));
+        shoes = itemDao.getItemsByType(application.getString(R.string.item_type_shoe));
     }
 
     public void deleteItem(Item item) {

@@ -1,17 +1,3 @@
-/*
-    Title: Styler
-    Description:
-    Group Members: Sowndaryan Jayaprakashanand, Wesley Agojo, Kevin Kieu, and Mena Hanna
-
-    Sources used:
-
-
-        Background for logo: https://as2.ftcdn.net/v2/jpg/06/36/22/53/1000_F_636225361_buyr8Ie0bS9rrO1eAKXA7EpVNDUmuxvs.jpg (from adobe stock images)
-        Background: https://as2.ftcdn.net/v2/jpg/15/62/91/61/1000_F_1562916174_rU9yiNzKH2Vp9mETn6L07k76Q42JYcPt.jpg (from adobe stock images)
-        font (road rage): https://www.dafont.com/road-rage.font
-
-*/
-
 package com.mobileapp.styler;
 
 import android.os.Bundle;

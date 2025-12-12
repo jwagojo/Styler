@@ -42,7 +42,6 @@ public class CatalogFragment extends Fragment {
 
         setupRecyclerView();
 
-        // Observe the full list of items for the catalog
         AppDatabase db = AppDatabase.getDatabase(requireContext());
         db.itemDao().getAllItems().observe(getViewLifecycleOwner(), items -> {
             adapter.setItems(items);
@@ -62,8 +61,7 @@ public class CatalogFragment extends Fragment {
     private void setupRecyclerView() {
         /*binding.catalogGrid.setLayoutManager(new GridLayoutManager(getContext(), 2));
         adapter = new ItemAdapter();
-        
-        // Set the long click listener for deletion
+
         adapter.setOnItemLongClickListener(item -> {
             showDeleteConfirmationDialog(item);
         }); */

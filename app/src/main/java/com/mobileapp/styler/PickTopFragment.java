@@ -48,7 +48,7 @@ public class PickTopFragment extends Fragment {
                 NavHostFragment.findNavController(PickTopFragment.this)
                         .navigate(R.id.action_pickTopFragment_to_pickBottomFragment);
             } else {
-                Toast.makeText(getContext(), "Please select an item", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.select_item_toast), Toast.LENGTH_SHORT).show();
             }
         });
 

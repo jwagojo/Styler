@@ -47,13 +47,11 @@ public class HomeFragment extends Fragment {
         binding.clothingGallery.setAdapter(itemAdapter);
 
         itemAdapter.setOnItemClickListener(item -> {
-            // e.g., HomeFragmentDirections.actionHomeFragmentToItemDetailFragment(item.id)
         });
 
         itemAdapter.setOnItemLongClickListener(item -> {
         });
 
-        // for outfits
         outfitAdapter = new OutfitAdapter();
         outfitAdapter.setAddCard(true);
         binding.outfitsRecycler.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(
@@ -69,7 +67,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onOutfitClick(Outfit outfit) {
                 Bundle args = new Bundle();
-                args.putInt("outfitId", outfit.id);  // "outfitId" must match the argument name in nav_graph
+                args.putInt(getString(R.string.outfit_id_key), outfit.id);
 
                 NavHostFragment.findNavController(HomeFragment.this)
                         .navigate(R.id.action_homeFragment_to_visualizationFragment, args);

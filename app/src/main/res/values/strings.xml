@@ -11,12 +11,63 @@
     <string name="home_button">Home</string>
     <string name="all_outfits_text">All Outfits</string>
 
-    <!-- Wardrobe Fragment Strings -->
     <string name="wardrobe_text">Wardrobe</string>
     <string name="search_wardrobe_hint">Search Wardrobe</string>
     <string name="saved_outfits_text">Saved Outfits</string>
     <string name="view_all_text">View all</string>
     <string name="add_new_outfit_text">Add New Outfit</string>
     <string name="clothing_text">Clothing</string>
+    <string name="outfit_id_key">outfitId</string>
+
+    <string name="remove_bg_api_key">oPnQrKwNRpK15gABFytvAcFa</string>
+    <string name="add_item_fragment_tag">AddItemFragment</string>
+    <string name="item_type_top">top</string>
+    <string name="item_type_bottom">bottom</string>
+    <string name="item_type_shoe">shoe</string>
+    <string name="image_type_glob">image/*</string>
+    <string name="item_name_required_error">Item name is required</string>
+    <string name="item_type_required_error">Item type is required</string>
+    <string name="select_image_first_error">Please select an image first.</string>
+    <string name="failed_to_create_temp_file_error">Failed to create temp file for upload.</string>
+    <string name="image_file_form_data_name">image_file</string>
+    <string name="api_error">API error: %1$d %2$s</string>
+    <string name="network_error">Network error: %1$s</string>
+    <string name="failed_to_save_processed_image_error">Failed to save processed image.</string>
+    <string name="processed_image_prefix">processed_</string>
+    <string name="png_extension">.png</string>
+    <string name="failed_to_save_processed_image_stream_error">Failed to save processed image stream.</string>
+    <string name="failed_to_create_temp_file_for_saving_error">Failed to create temp file for saving.</string>
+    <string name="item_saved_toast">Item saved!</string>
+    <string name="error_toast">Error: %1$s</string>
+    <string name="jpg_extension">.jpg</string>
+    <string name="png_mime_type_glob">png</string>
+    <string name="gif_mime_type_glob">gif</string>
+    <string name="gif_extension">.gif</string>
+    <string name="upload_prefix">upload_</string>
+    <string name="error_creating_file_from_uri_log">Error creating file from URI</string>
+
+    <string name="select_item_toast">Please select an item</string>
+
+    <string name="outfit_saved_toast">Outfit saved!</string>
+    <string name="cannot_save_incomplete_outfit_toast">Cannot save incomplete outfit.</string>
+    <string name="name_your_outfit_dialog_title">Name Your Outfit</string>
+    <string name="outfit_name_hint">e.g., Summer Fit, Black &amp; White</string>
+    <string name="untitled_outfit_name">Untitled Outfit</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="clear_outfits_and_catalog_button_text">Clear Outfits and Catalog</string>
+    <string name="select_image_text">Select Image</string>
+    <string name="item_name_hint">Item Name</string>
+    <string name="item_type_hint">Item Type</string>
+    <string name="save_text">Save</string>
+    <string name="catalog_title">Catalog</string>
+    <string name="help_title">Help</string>
+    <string name="about_styler_title">About Styler</string>
+    <string name="about_styler_text">Styler is a mobile application that helps you organize your wardrobe and create outfits. You can add items to your digital closet, categorize them, and then mix and match to create the perfect look for any occasion.</string>
+    <string name="faq_title">Frequently Asked Questions</string>
+    <string name="q1_text">Q: How do I add a new clothing item?</string>
+    <string name="a1_text">A: Navigate to the Catalog screen and tap the + button. You can then select an image of your item, give it a name, and specify its type (e.g., top, bottom, shoes).</string>
+    <string name="q2_text">Q: How do I create an outfit?</string>
+    <string name="a2_text">A: From the Catalog screen, press the Next button to start creating an outfit. You will be guided through selecting a top, bottom, and shoes to create a complete look.</string>
+    <string name="choose_a_bottom_title">Choose a Bottom</string>
 
 </resources>

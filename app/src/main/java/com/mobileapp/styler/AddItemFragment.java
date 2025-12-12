@@ -43,9 +43,6 @@ import retrofit2.Response;
 
 public class AddItemFragment extends Fragment {
 
-    private static final String REMOVE_BG_API_KEY = "oPnQrKwNRpK15gABFytvAcFa";
-    private static final String TAG = "AddItemFragment";
-
     private FragmentAddItemBinding binding;
     private Uri selectedImageUri;
     private RemoveBgApiService apiService;
@@ -73,7 +70,7 @@ public class AddItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String[] itemTypes = new String[]{"Top", "Bottom", "Shoe"};
+        String[] itemTypes = new String[]{getString(R.string.item_type_top), getString(R.string.item_type_bottom), getString(R.string.item_type_shoe)};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_item, itemTypes);
         binding.autoCompleteTextViewItemType.setAdapter(adapter);
 
@@ -86,7 +83,7 @@ public class AddItemFragment extends Fragment {
 
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
+        intent.setType(getString(R.string.image_type_glob));
         pickImageLauncher.launch(intent);
     }
 
@@ -94,24 +91,21 @@ public class AddItemFragment extends Fragment {
         String itemName = binding.editTextItemName.getText().toString().trim();
         String itemType = binding.autoCompleteTextViewItemType.getText().toString().trim().toLowerCase();
 
-        // Reset previous errors
         binding.textInputLayoutItemName.setError(null);
         binding.textInputLayoutItemType.setError(null);
 
-        // --- Validation Logic ---
         if (itemName.isEmpty()) {
-            binding.textInputLayoutItemName.setError("Item name is required");
+            binding.textInputLayoutItemName.setError(getString(R.string.item_name_required_error));
             return;
         }
 
         if (itemType.isEmpty()) {
-            binding.textInputLayoutItemType.setError("Item type is required");
+            binding.textInputLayoutItemType.setError(getString(R.string.item_type_required_error));
             return;
         }
-        // --- End Validation ---
 
         if (selectedImageUri == null) {
-            handleFailure("Please select an image first.");
+            handleFailure(getString(R.string.select_image_first_error));
             return;
         }
 
@@ -119,14 +113,14 @@ public class AddItemFragment extends Fragment {
 
         File imageFile = createFileFromUri(getContext(), selectedImageUri);
         if (imageFile == null) {
-            handleFailure("Failed to create temp file for upload.");
+            handleFailure(getString(R.string.failed_to_create_temp_file_error));
             return;
         }
 
         RequestBody requestFile = RequestBody.create(MediaType.parse(getContext().getContentResolver().getType(selectedImageUri)), imageFile);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("image_file", imageFile.getName(), requestFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData(getString(R.string.image_file_form_data_name), imageFile.getName(), requestFile);
 
-        apiService.removeBackground(REMOVE_BG_API_KEY, body).enqueue(new Callback<ResponseBody>() {
+        apiService.removeBackground(getString(R.string.remove_bg_api_key), body).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -134,16 +128,16 @@ public class AddItemFragment extends Fragment {
                     if (processedImagePath != null) {
                         saveItemToDatabase(processedImagePath);
                     } else {
-                        handleFailure("Failed to save processed image.");
+                        handleFailure(getString(R.string.failed_to_save_processed_image_error));
                     }
                 } else {
-                    handleFailure("API error: " + response.code() + " " + response.message());
+                    handleFailure(getString(R.string.api_error, response.code(), response.message()));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                handleFailure("Network error: " + t.getMessage());
+                handleFailure(getString(R.string.network_error, t.getMessage()));
             }
         });
     }
@@ -151,7 +145,7 @@ public class AddItemFragment extends Fragment {
     private String saveImageToInternalStorage(ResponseBody body) {
         File outputFile;
         try {
-            outputFile = File.createTempFile("processed_", ".png", requireContext().getCacheDir());
+            outputFile = File.createTempFile(getString(R.string.processed_image_prefix), getString(R.string.png_extension), requireContext().getCacheDir());
             try (InputStream inputStream = body.byteStream();
                  OutputStream outputStream = new FileOutputStream(outputFile)) {
                 byte[] fileReader = new byte[4096];
@@ -165,18 +159,18 @@ public class AddItemFragment extends Fragment {
                 outputStream.flush();
                 return outputFile.getAbsolutePath();
             } catch (IOException e) {
-                handleFailure("Failed to save processed image stream.");
+                handleFailure(getString(R.string.failed_to_save_processed_image_stream_error));
                 return null;
             }
         } catch (IOException e) {
-            handleFailure("Failed to create temp file for saving.");
+            handleFailure(getString(R.string.failed_to_create_temp_file_for_saving_error));
             return null;
         }
     }
 
     private void saveItemToDatabase(String imagePath) {
         String itemName = binding.editTextItemName.getText().toString().trim();
-        String itemType = binding.autoCompleteTextViewItemType.getText().toString().trim().toLowerCase(); // Always save as lowercase
+        String itemType = binding.autoCompleteTextViewItemType.getText().toString().trim().toLowerCase();
 
         Item item = new Item();
         item.name = itemName;
@@ -188,7 +182,7 @@ public class AddItemFragment extends Fragment {
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     binding.progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "Item saved!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.item_saved_toast), Toast.LENGTH_SHORT).show();
                     NavHostFragment.findNavController(AddItemFragment.this).popBackStack();
                 });
             }
@@ -199,8 +193,8 @@ public class AddItemFragment extends Fragment {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
                 binding.progressBar.setVisibility(View.GONE);
-                Log.e(TAG, message);
-                Toast.makeText(getContext(), "Error: " + message, Toast.LENGTH_LONG).show();
+                Log.e(getString(R.string.add_item_fragment_tag), message);
+                Toast.makeText(getContext(), getString(R.string.error_toast, message), Toast.LENGTH_LONG).show();
             });
         }
     }
@@ -208,15 +202,15 @@ public class AddItemFragment extends Fragment {
     private File createFileFromUri(Context context, Uri uri) {
         File outputFile;
         try {
-            String fileExtension = ".jpg";
+            String fileExtension = getString(R.string.jpg_extension);
             if (uri != null && context.getContentResolver() != null) {
                 String mimeType = context.getContentResolver().getType(uri);
                 if (mimeType != null) {
-                    if (mimeType.contains("png")) fileExtension = ".png";
-                    else if (mimeType.contains("gif")) fileExtension = ".gif";
+                    if (mimeType.contains(getString(R.string.png_mime_type_glob))) fileExtension = getString(R.string.png_extension);
+                    else if (mimeType.contains(getString(R.string.gif_mime_type_glob))) fileExtension = getString(R.string.gif_extension);
                 }
             }
-            outputFile = File.createTempFile("upload_", fileExtension, context.getCacheDir());
+            outputFile = File.createTempFile(getString(R.string.upload_prefix), fileExtension, context.getCacheDir());
 
             try (InputStream inputStream = context.getContentResolver().openInputStream(uri);
                  OutputStream outputStream = new FileOutputStream(outputFile)) {
@@ -229,7 +223,7 @@ public class AddItemFragment extends Fragment {
             }
             return outputFile;
         } catch (IOException e) {
-            Log.e(TAG, "Error creating file from URI", e);
+            Log.e(getString(R.string.add_item_fragment_tag), getString(R.string.error_creating_file_from_uri_log), e);
             return null;
         }
     }

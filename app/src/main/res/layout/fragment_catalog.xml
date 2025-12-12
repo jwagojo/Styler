@@ -33,7 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- FIXED: RecyclerView now sits BELOW the divider -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/catalog_grid"
         android:layout_width="0dp"

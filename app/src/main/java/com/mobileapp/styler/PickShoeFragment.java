@@ -48,7 +48,7 @@ public class PickShoeFragment extends Fragment {
                 NavHostFragment.findNavController(PickShoeFragment.this)
                         .navigate(R.id.action_pickShoeFragment_to_visualizationFragment);
             } else {
-                Toast.makeText(getContext(), "Please select an item", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.select_item_toast), Toast.LENGTH_SHORT).show();
             }
         });
 
