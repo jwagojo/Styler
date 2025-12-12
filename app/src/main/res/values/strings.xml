@@ -19,7 +19,6 @@
     <string name="clothing_text">Clothing</string>
     <string name="outfit_id_key">outfitId</string>
 
-    <string name="remove_bg_api_key">oPnQrKwNRpK15gABFytvAcFa</string>
     <string name="add_item_fragment_tag">AddItemFragment</string>
     <string name="item_type_top">top</string>
     <string name="item_type_bottom">bottom</string>
